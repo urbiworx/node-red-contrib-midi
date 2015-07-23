@@ -1,0 +1,56 @@
+<!--
+  Copyright 2015 Urbiworx
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="midi">
+    <div class="form-row node-input-name">
+         <label for="node-input-name"><i class="fa fa-file"></i> Name</label>
+         <input type="text" id="node-input-name" placeholder="name">
+    </div>
+    <div class="form-row node-input-filtermessage">
+         <label for="node-input-filtermessage"><i class="fa fa-file"></i> Message</label>
+         <input type="text" id="node-input-filtermessage" placeholder="144,36,64">
+    </div>
+     <div class="form-row node-input-port">
+         <label for="node-input-port"><i class="fa fa-file"></i> Port</label>
+         <input type="text" id="node-input-port" placeholder="0">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="midi">
+
+Configure a midi input by specifing an input midi port. This node outputs json messages in the format <pre>message:[144,36,64],deltaTime:0.67}</pre>. 
+Messages can be filtered by using the optional message attribute. Setting the message attribute to '144,36,64' will only allow the example message above.
+<br/>
+Windows User might want to use <a href="http://www.nerds.de/en/loopbe1.html">LoopBe1</a> and <a href="http://vmpk.sourceforge.net/">Virtual Midi Piano Keyboard</a>.
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('midi',{
+        category: 'function',
+        defaults: {
+            name: {value:""},
+			filtermessage: {value:""},
+			port: {value:0}
+        },
+        color:"BurlyWood",
+        inputs:0,
+        outputs:1,
+        align: "right",
+        label: function() {
+            return this.name||"Midi"
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
