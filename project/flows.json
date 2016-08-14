@@ -16,5 +16,22 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "9a2f7adf.65d088",
+        "type": "inject",
+        "z": "3fab23bb.c054dc",
+        "name": "test",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 290,
+        "y": 200,
+        "wires": [
+            []
+        ]
     }
 ]
