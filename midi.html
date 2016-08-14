@@ -11,7 +11,7 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="midi">
+<script type="text/x-red" data-template-name="midi in">
     <div class="form-row node-input-name">
          <label for="node-input-name"><i class="fa fa-file"></i> Name</label>
          <input type="text" id="node-input-name" placeholder="name">
@@ -22,35 +22,49 @@
     </div>
      <div class="form-row node-input-port">
          <label for="node-input-port"><i class="fa fa-file"></i> Port</label>
-         <input type="text" id="node-input-port" placeholder="0">
+         <select id="node-input-port"></select>
     </div>
+
 </script>
 
-<script type="text/x-red" data-help-name="midi">
+<script type="text/x-red" data-help-name="midi in">
 
-Configure a midi input by specifing an input midi port. This node outputs json messages in the format <pre>message:[144,36,64],deltaTime:0.67}</pre>. 
+Configure a midi input by specifing an input midi port. This node outputs json messages in the format <pre>message:[144,36,64],deltaTime:0.67}</pre>.
 Messages can be filtered by using the optional message attribute. Setting the message attribute to '144,36,64' will only allow the example message above.
 <br/>
 Windows User might want to use <a href="http://www.nerds.de/en/loopbe1.html">LoopBe1</a> and <a href="http://vmpk.sourceforge.net/">Virtual Midi Piano Keyboard</a>.
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('midi',{
-        category: 'function',
-        defaults: {
-            name: {value:""},
-			filtermessage: {value:""},
-			port: {value:0}
-        },
-        color:"BurlyWood",
-        inputs:0,
-        outputs:1,
-        align: "right",
-        label: function() {
-            return this.name||"Midi"
-        },
-        labelStyle: function() {
-            return this.name?"node_label_italic":"";
-        }
+    RED.nodes.registerType('midi in',{
+      category: 'function',
+      defaults: {
+        name: {value:""},
+			  filtermessage: {value:""},
+		    port: {value:0}
+      },
+      color:"BurlyWood",
+      inputs:0,
+      outputs:1,
+      align: "right",
+      label: function() {
+          return this.name||"midi in"
+      },
+      labelStyle: function() {
+          return this.name?"node_label_italic":"";
+      },
+      oneditprepare: function () {
+        $.ajax({
+          url: "midi/input/ports",
+          success: function(data) {
+            var ports = JSON.parse(data);
+            console.log(ports);
+            $.each(ports, function (i, item) {
+              console.log(item);
+              $('#node-input-port').append($('<option>', {value: i, text: item}));
+            });
+          }
+        })
+      }
     });
 </script>

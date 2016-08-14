@@ -1,0 +1,20 @@
+[
+    {
+        "id": "3fab23bb.c054dc",
+        "type": "tab",
+        "label": "Flow 1"
+    },
+    {
+        "id": "a2f515e4.5d0ae8",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "dfd",
+        "filtermessage": "",
+        "port": "0",
+        "x": 300,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    }
+]
