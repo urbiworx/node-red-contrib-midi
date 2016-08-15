@@ -22,13 +22,26 @@
         "z": "3fab23bb.c054dc",
         "name": "",
         "filtermessage": "",
-        "midiport": "0",
+        "midiport": "1",
         "x": 270,
         "y": 60,
         "wires": [
             [
                 "61baae31.9e455"
             ]
+        ]
+    },
+    {
+        "id": "197f0a7e.e680f6",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "filtermessage": "",
+        "midiport": "1",
+        "x": 260,
+        "y": 140,
+        "wires": [
+            []
         ]
     }
 ]

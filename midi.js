@@ -49,11 +49,10 @@ module.exports = function(RED) {
             return;
         });
 
-        RED.httpAdmin.get('/midi/input/ports/current', function(req, res, next) {
+        RED.httpAdmin.get('/midi/input/ports/' + node.id + '/current', function(req, res, next) {
             res.end(JSON.stringify(midiPort));
             return;
         });
     }
-
     RED.nodes.registerType("midi in", MidiInputNode);
 };
