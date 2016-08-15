@@ -21,7 +21,7 @@
       },
       color:"BurlyWood",
       icon: "midi_port.png",
-      inputs:1,
+      inputs:0,
       outputs:1,
       align: "left",
       label: function() {
@@ -35,20 +35,15 @@
           url: "midi/input/ports",
           success: function(data) {
             var ports = JSON.parse(data);
-            console.log(ports);
             $.each(ports, function (i, item) {
-              console.log(item);
               $('#node-input-midiport').append($('<option>', {value: i, text: item}));
             });
             $.ajax({
               url: "midi/input/ports/current",
               success: function(data) {
-                console.log("data !! " + JSON.parse(data));
                 $('#node-input-midiport').val(JSON.parse(data));
               }
             })
-            //$('#node-input-midiport').val(0);
-            //$('#node-input-midiport').val(1);
           }
         })
       },
