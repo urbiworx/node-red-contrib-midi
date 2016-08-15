@@ -8,11 +8,11 @@
         "id": "61baae31.9e455",
         "type": "debug",
         "z": "3fab23bb.c054dc",
-        "name": "",
+        "name": "1",
         "active": true,
         "console": "false",
-        "complete": "false",
-        "x": 510,
+        "complete": "payload",
+        "x": 490,
         "y": 80,
         "wires": []
     },
@@ -22,8 +22,8 @@
         "z": "3fab23bb.c054dc",
         "name": "",
         "filtermessage": "",
-        "midiport": "1",
-        "x": 270,
+        "midiport": "0",
+        "x": 250,
         "y": 60,
         "wires": [
             [
@@ -38,10 +38,24 @@
         "name": "",
         "filtermessage": "",
         "midiport": "1",
-        "x": 260,
-        "y": 140,
+        "x": 250,
+        "y": 100,
         "wires": [
-            []
+            [
+                "f7b0917c.084f7"
+            ]
         ]
+    },
+    {
+        "id": "f7b0917c.084f7",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "2",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 470,
+        "y": 140,
+        "wires": []
     }
 ]

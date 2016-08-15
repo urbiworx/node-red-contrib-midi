@@ -18,41 +18,57 @@ module.exports = function(RED) {
     "use strict";
     var midi = require('midi');
 
-    var midiPort = null;
+    var inputPortID = {};
+    var outputPortID = {};
 
     function MidiInputNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
 
         node.input = new midi.input();
-        node.portCount = node.input.getPortCount();
-        node.portNames = [];
-        midiPort = config.midiport;
-
-        for (var i = 0; i < node.portCount; i++) {
-            node.portNames.push(node.input.getPortName(i));
-            node.warn(node.input.getPortName(i));
-        }
+        inputPortID[node.id] = config.midiport;
 
         node.input.on('message', function(deltaTime, message) {
             node.send({payload: message});
         });
 
-        node.input.openPort(parseInt(midiPort));
+        node.input.openPort(parseInt(inputPortID[node.id]));
 
         node.on("close", function() {
             node.input.closePort();
-        });
-
-        RED.httpAdmin.get('/midi/input/ports', function(req, res, next) {
-            res.end(JSON.stringify(node.portNames));
-            return;
+            delete inputPortID[node.id];
         });
 
         RED.httpAdmin.get('/midi/input/ports/' + node.id + '/current', function(req, res, next) {
-            res.end(JSON.stringify(midiPort));
+            res.end(JSON.stringify(inputPortID[node.id]));
             return;
         });
     }
     RED.nodes.registerType("midi in", MidiInputNode);
+
+    RED.httpAdmin.get('/midi/input/ports', function(req, res, next) {
+        var configInput = new midi.input();
+        var portCount = configInput.getPortCount();
+        var portNames = [];
+
+        for (var i = 0; i < portCount; i++) {
+            portNames.push(configInput.getPortName(i));
+        }
+        configInput.closePort();
+        res.end(JSON.stringify(portNames));
+        return;
+    });
+
+    RED.httpAdmin.get('/midi/output/ports', function(req, res, next) {
+        var configOutput = new midi.output();
+        var portCount = configOutput.getPortCount();
+        var portNames = [];
+
+        for (var i = 0; i < portCount; i++) {
+            portNames.push(configOutput.getPortName(i));
+        }
+        configOutput.closePort();
+        res.end(JSON.stringify(portNames));
+        return;
+    });
 };
