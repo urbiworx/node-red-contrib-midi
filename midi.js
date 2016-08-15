@@ -17,41 +17,57 @@
 module.exports = function(RED) {
     "use strict";
     var midi = require('midi');
+    var util = require('util');
 
     function MidiInputNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
 
-        var input = new midi.input();
-        var vinput = new midi.input();
-        var portCount = input.getPortCount();
-        var portNames = [];
+        node.input = new midi.input();
+        node.vinput = new midi.input();
+        node.portCount = node.input.getPortCount();
+        node.portNames = [];
+        node.midiPort = config.midiport;
 
-        node.warn(config.port);
+        node.warn('config port ' + node.midiPort);
+        node.log(util.inspect(config, { showHidden: true, depth: null }))
 
-        for (var i = 0; i < portCount; i++) {
-            portNames.push(input.getPortName(i));
-            node.warn(input.getPortName(i));
+        for (var i = 0; i < node.portCount; i++) {
+            node.portNames.push(node.input.getPortName(i));
+            node.warn(node.input.getPortName(i));
         }
 
-        vinput.openVirtualPort("to Node-RED");
-        vinput.on('message', function(deltaTime, message) {
+        node.vinput.openVirtualPort("to Node-RED");
+        node.vinput.on('message', function(deltaTime, message) {
             node.warn('m:' + message + ' d:' + deltaTime);
         });
 
-        input.on('message', function(deltaTime, message) {
+        node.input.on('message', function(deltaTime, message) {
             node.warn('m:' + message + ' d:' + deltaTime);
         });
 
-        input.openPort(0);
+        node.input.openPort(0);
 
         node.on("close", function() {
-            input.closePort();
-            vinput.closePort();
+            node.input.closePort();
+            node.vinput.closePort();
         });
 
+        node.on("input", function(msg) {
+            node.warn(node.midiPort);
+        });
+
+        node.getCurrentPort = function() {
+            return config.midiport;
+        };
+
         RED.httpAdmin.get('/midi/input/ports', function(req, res, next) {
-            res.end(JSON.stringify(portNames));
+            res.end(JSON.stringify(node.portNames));
+            return;
+        });
+
+        RED.httpAdmin.get('/midi/input/ports/current', function(req, res, next) {
+            res.end(JSON.stringify(node.getCurrentPort()));
             return;
         });
     }

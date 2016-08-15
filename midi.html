@@ -1,5 +1,5 @@
 <!--
-  Copyright 2015 Urbiworx
+  Copyright 2016 Urbiworx, Nathanaël Lécaudé
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -11,6 +11,53 @@
   limitations under the License.
 -->
 
+<script type="text/javascript">
+    RED.nodes.registerType('midi in',{
+      category: 'function',
+      defaults: {
+        name: {value:""},
+			  filtermessage: {value:""},
+		    midiport: {value:"0"}
+      },
+      color:"BurlyWood",
+      icon: "midi_port.png",
+      inputs:1,
+      outputs:1,
+      align: "left",
+      label: function() {
+          return this.name || "midi in"
+      },
+      labelStyle: function() {
+          return this.name ? "node_label_italic":"";
+      },
+      oneditprepare: function() {
+        $.ajax({
+          url: "midi/input/ports",
+          success: function(data) {
+            var ports = JSON.parse(data);
+            console.log(ports);
+            $.each(ports, function (i, item) {
+              console.log(item);
+              $('#node-input-midiport').append($('<option>', {value: i, text: item}));
+            });
+            $.ajax({
+              url: "midi/input/ports/current",
+              success: function(data) {
+                console.log("data !! " + JSON.parse(data));
+                $('#node-input-midiport').val(JSON.parse(data));
+              }
+            })
+            //$('#node-input-midiport').val(0);
+            //$('#node-input-midiport').val(1);
+          }
+        })
+      },
+      oneditsave: function() {
+        //console.log($('#node-input-midiport').val());
+      }
+    });
+</script>
+
 <script type="text/x-red" data-template-name="midi in">
     <div class="form-row node-input-name">
          <label for="node-input-name"><i class="fa fa-file"></i> Name</label>
@@ -20,52 +67,16 @@
          <label for="node-input-filtermessage"><i class="fa fa-file"></i> Message</label>
          <input type="text" id="node-input-filtermessage" placeholder="144,36,64">
     </div>
-     <div class="form-row node-input-port">
-         <label for="node-input-port"><i class="fa fa-file"></i> Port</label>
-         <select id="node-input-port"></select>
+     <div class="form-row">
+         <label for="node-input-midiport"><i class="fa fa-file"></i> Port</label>
+         <select id="node-input-midiport">
+         </select>
     </div>
-
 </script>
 
 <script type="text/x-red" data-help-name="midi in">
-
-Configure a midi input by specifing an input midi port. This node outputs json messages in the format <pre>message:[144,36,64],deltaTime:0.67}</pre>.
-Messages can be filtered by using the optional message attribute. Setting the message attribute to '144,36,64' will only allow the example message above.
-<br/>
-Windows User might want to use <a href="http://www.nerds.de/en/loopbe1.html">LoopBe1</a> and <a href="http://vmpk.sourceforge.net/">Virtual Midi Piano Keyboard</a>.
-</script>
-
-<script type="text/javascript">
-    RED.nodes.registerType('midi in',{
-      category: 'function',
-      defaults: {
-        name: {value:""},
-			  filtermessage: {value:""},
-		    port: {value:0}
-      },
-      color:"BurlyWood",
-      icon: "midi_port.png",
-      inputs:0,
-      outputs:1,
-      align: "left",
-      label: function() {
-          return this.name || "midi in"
-      },
-      labelStyle: function() {
-          return this.name ? "node_label_italic":"";
-      },
-      oneditprepare: function () {
-        $.ajax({
-          url: "midi/input/ports",
-          success: function(data) {
-            var ports = JSON.parse(data);
-            console.log(ports);
-            $.each(ports, function (i, item) {
-              console.log(item);
-              $('#node-input-port').append($('<option>', {value: i, text: item}));
-            });
-          }
-        })
-      }
-    });
+  Configure a midi input by specifing an input midi port. This node outputs json messages in the format <pre>message:[144,36,64],deltaTime:0.67}</pre>.
+  Messages can be filtered by using the optional message attribute. Setting the message attribute to '144,36,64' will only allow the example message above.
+  <br/>
+  Windows User might want to use <a href="http://www.nerds.de/en/loopbe1.html">LoopBe1</a> and <a href="http://vmpk.sourceforge.net/">Virtual Midi Piano Keyboard</a>.
 </script>

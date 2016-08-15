@@ -5,31 +5,33 @@
         "label": "Flow 1"
     },
     {
-        "id": "a2f515e4.5d0ae8",
-        "type": "midi in",
-        "z": "3fab23bb.c054dc",
-        "name": "dfd",
-        "filtermessage": "",
-        "port": "0",
-        "x": 300,
-        "y": 80,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "9a2f7adf.65d088",
+        "id": "69bb834e.96447c",
         "type": "inject",
         "z": "3fab23bb.c054dc",
-        "name": "test",
+        "name": "",
         "topic": "",
         "payload": "",
         "payloadType": "date",
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 290,
-        "y": 200,
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "2b812bb.fd47ed4"
+            ]
+        ]
+    },
+    {
+        "id": "2b812bb.fd47ed4",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "filtermessage": "",
+        "midiport": "1",
+        "x": 320,
+        "y": 120,
         "wires": [
             []
         ]
