@@ -9,44 +9,14 @@
         "type": "midi in",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "filtermessage": "",
         "midiport": "0",
         "x": 250,
-        "y": 60,
+        "y": 180,
         "wires": [
             [
-                "4913238a.b6ecdc",
-                "530cecf2.acf314"
-            ]
-        ]
-    },
-    {
-        "id": "197f0a7e.e680f6",
-        "type": "midi in",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "filtermessage": "",
-        "midiport": "1",
-        "x": 250,
-        "y": 160,
-        "wires": [
-            [
-                "530cecf2.acf314",
                 "4913238a.b6ecdc"
             ]
         ]
-    },
-    {
-        "id": "530cecf2.acf314",
-        "type": "debug",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 610,
-        "y": 160,
-        "wires": []
     },
     {
         "id": "4913238a.b6ecdc",
@@ -70,12 +40,17 @@
                 "t": "eq",
                 "v": "noteoff",
                 "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "pitchbend",
+                "vt": "str"
             }
         ],
         "checkall": "true",
-        "outputs": 3,
+        "outputs": 4,
         "x": 390,
-        "y": 60,
+        "y": 180,
         "wires": [
             [
                 "125fb388.eda04c"
@@ -85,6 +60,9 @@
             ],
             [
                 "e64f0316.19b1"
+            ],
+            [
+                "d6d8d908.292728"
             ]
         ]
     },
@@ -97,7 +75,7 @@
         "console": "false",
         "complete": "payload",
         "x": 570,
-        "y": 20,
+        "y": 140,
         "wires": []
     },
     {
@@ -109,7 +87,7 @@
         "console": "false",
         "complete": "payload",
         "x": 580,
-        "y": 60,
+        "y": 180,
         "wires": []
     },
     {
@@ -121,7 +99,48 @@
         "console": "false",
         "complete": "payload",
         "x": 580,
-        "y": 100,
+        "y": 220,
         "wires": []
+    },
+    {
+        "id": "d6d8d908.292728",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "pitchbend",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 580,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "9f1818a6.60e7e8",
+        "type": "midi out",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "1",
+        "x": 420,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "6a922a23.956dd4",
+        "type": "inject",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "topic": "",
+        "payload": "[176,1,127]",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 200,
+        "y": 400,
+        "wires": [
+            [
+                "9f1818a6.60e7e8"
+            ]
+        ]
     }
 ]

@@ -66,6 +66,31 @@ module.exports = function(RED) {
     }
     RED.nodes.registerType("midi in", MidiInputNode);
 
+    function MidiOutputNode(config) {
+        RED.nodes.createNode(this, config);
+        var node = this;
+
+        node.output = new midi.output();
+        outputPortID[node.id] = config.midiport;
+
+        node.output.openPort(parseInt(outputPortID[node.id]));
+
+        node.on("input", function(msg) {
+            node.output.sendMessage(msg.payload);
+        });
+        
+        node.on("close", function() {
+            node.output.closePort();
+            delete outputPortID[node.id];
+        });
+
+        RED.httpAdmin.get('/midi/output/ports/' + node.id + '/current', function(req, res, next) {
+            res.end(JSON.stringify(outputPortID[node.id]));
+            return;
+        });
+    }
+    RED.nodes.registerType("midi out", MidiOutputNode);
+
     RED.httpAdmin.get('/midi/input/ports', function(req, res, next) {
         var configInput = new midi.input();
         var portCount = configInput.getPortCount();

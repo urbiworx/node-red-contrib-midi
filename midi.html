@@ -11,12 +11,13 @@
   limitations under the License.
 -->
 
+
+<!-- Input node -->
 <script type="text/javascript">
     RED.nodes.registerType('midi in',{
       category: 'input',
       defaults: {
         name: {value:""},
-			  filtermessage: {value:""},
 		    midiport: {value:"0"}
       },
       color:"BurlyWood",
@@ -59,9 +60,60 @@
          <label for="node-input-name"><i class="fa fa-file"></i> Name</label>
          <input type="text" id="node-input-name" placeholder="name">
     </div>
-    <div class="form-row node-input-filtermessage">
-         <label for="node-input-filtermessage"><i class="fa fa-file"></i> Message</label>
-         <input type="text" id="node-input-filtermessage" placeholder="144,36,64">
+     <div class="form-row">
+         <label for="node-input-midiport"><i class="fa fa-file"></i> Port</label>
+         <select id="node-input-midiport">
+         </select>
+    </div>
+</script>
+
+<!-- Output node -->
+<script type="text/javascript">
+    RED.nodes.registerType('midi out',{
+      category: 'output',
+      defaults: {
+        name: {value:""},
+		    midiport: {value:"0"}
+      },
+      color:"BurlyWood",
+      icon: "midi_port.png",
+      inputs:1,
+      outputs:0,
+      align: "right",
+      label: function() {
+          return this.name || "midi out"
+      },
+      labelStyle: function() {
+          return this.name ? "node_label_italic":"";
+      },
+      oneditprepare: function() {
+        var id = this.id;
+        $.ajax({
+          url: "midi/output/ports",
+          success: function(data) {
+            var ports = JSON.parse(data);
+            $.each(ports, function (i, item) {
+              $('#node-input-midiport').append($('<option>', {value: i, text: item}));
+            });
+            $.ajax({
+              url: "midi/output/ports/" + id + "/current",
+              success: function(data) {
+                $('#node-input-midiport').val(JSON.parse(data));
+              }
+            })
+          }
+        })
+      },
+      oneditsave: function() {
+        //console.log($('#node-input-midiport').val());
+      }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="midi out">
+    <div class="form-row node-input-name">
+         <label for="node-input-name"><i class="fa fa-file"></i> Name</label>
+         <input type="text" id="node-input-name" placeholder="name">
     </div>
      <div class="form-row">
          <label for="node-input-midiport"><i class="fa fa-file"></i> Port</label>
@@ -69,6 +121,8 @@
          </select>
     </div>
 </script>
+
+
 
 <script type="text/x-red" data-help-name="midi in">
   Configure a midi input by specifing an input midi port. This node outputs json messages in the format <pre>message:[144,36,64],deltaTime:0.67}</pre>.
