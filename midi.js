@@ -21,6 +21,12 @@ module.exports = function(RED) {
     var inputPortID = {};
     var outputPortID = {};
 
+    var midiTypes = {
+        '11': 'controlchange',
+        '9': 'noteon',
+        '8': 'noteoff',
+    };
+
     function MidiInputNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
@@ -29,7 +35,17 @@ module.exports = function(RED) {
         inputPortID[node.id] = config.midiport;
 
         node.input.on('message', function(deltaTime, message) {
-            node.send({payload: message});
+            var msg = {};
+            msg.raw = message.slice();
+            msg.deltaTime = deltaTime;
+            msg.payload = message.splice(1);
+            var channel = message & 0xF;
+            var type = message >> 4;
+            msg.channel = channel + 1;
+
+            msg.type = midiTypes[type];
+            msg.topic = node.input.getPortName(parseInt(config.midiport));
+            node.send(msg);
         });
 
         node.input.openPort(parseInt(inputPortID[node.id]));

@@ -5,18 +5,6 @@
         "label": "Flow 1"
     },
     {
-        "id": "61baae31.9e455",
-        "type": "debug",
-        "z": "3fab23bb.c054dc",
-        "name": "1",
-        "active": true,
-        "console": "false",
-        "complete": "payload",
-        "x": 490,
-        "y": 80,
-        "wires": []
-    },
-    {
         "id": "349fc24b.cb603e",
         "type": "midi in",
         "z": "3fab23bb.c054dc",
@@ -27,7 +15,8 @@
         "y": 60,
         "wires": [
             [
-                "61baae31.9e455"
+                "4913238a.b6ecdc",
+                "530cecf2.acf314"
             ]
         ]
     },
@@ -39,23 +28,100 @@
         "filtermessage": "",
         "midiport": "1",
         "x": 250,
-        "y": 100,
+        "y": 160,
         "wires": [
             [
-                "f7b0917c.084f7"
+                "530cecf2.acf314",
+                "4913238a.b6ecdc"
             ]
         ]
     },
     {
-        "id": "f7b0917c.084f7",
+        "id": "530cecf2.acf314",
         "type": "debug",
         "z": "3fab23bb.c054dc",
-        "name": "2",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 610,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "4913238a.b6ecdc",
+        "type": "switch",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "property": "type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "controlchange",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "noteon",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "noteoff",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 3,
+        "x": 390,
+        "y": 60,
+        "wires": [
+            [
+                "125fb388.eda04c"
+            ],
+            [
+                "b4bd305c.4b42d"
+            ],
+            [
+                "e64f0316.19b1"
+            ]
+        ]
+    },
+    {
+        "id": "125fb388.eda04c",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "cc",
         "active": true,
         "console": "false",
         "complete": "payload",
-        "x": 470,
-        "y": 140,
+        "x": 570,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "b4bd305c.4b42d",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "noteon",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 580,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "e64f0316.19b1",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "noteoff",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 580,
+        "y": 100,
         "wires": []
     }
 ]
