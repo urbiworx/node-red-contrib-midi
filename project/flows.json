@@ -23,7 +23,7 @@
         "type": "switch",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "property": "type",
+        "property": "midi.type",
         "propertyType": "msg",
         "rules": [
             {
@@ -53,7 +53,8 @@
         "y": 180,
         "wires": [
             [
-                "125fb388.eda04c"
+                "125fb388.eda04c",
+                "65de96b7.9a2168"
             ],
             [
                 "b4bd305c.4b42d"
@@ -120,7 +121,7 @@
         "z": "3fab23bb.c054dc",
         "name": "",
         "midiport": "1",
-        "x": 420,
+        "x": 400,
         "y": 400,
         "wires": []
     },
@@ -142,5 +143,61 @@
                 "9f1818a6.60e7e8"
             ]
         ]
+    },
+    {
+        "id": "65de96b7.9a2168",
+        "type": "switch",
+        "z": "3fab23bb.c054dc",
+        "name": "CC filter",
+        "property": "payload[0]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 860,
+        "y": 160,
+        "wires": [
+            [
+                "2238d341.ddc72c"
+            ],
+            [
+                "80fb62dc.7f04a"
+            ]
+        ]
+    },
+    {
+        "id": "2238d341.ddc72c",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "CC1",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 1110,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "80fb62dc.7f04a",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "CC2",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 1110,
+        "y": 180,
+        "wires": []
     }
 ]

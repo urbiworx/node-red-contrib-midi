@@ -40,14 +40,15 @@ module.exports = function(RED) {
 
         node.input.on('message', function(deltaTime, message) {
             var msg = {};
-            msg.raw = message.slice();
-            msg.deltaTime = deltaTime;
+            msg.midi = {};
+            msg.midi.raw = message.slice();
+            msg.midi.deltaTime = deltaTime;
             msg.payload = message.splice(1);
             var channel = message & 0xF;
             var type = message >> 4;
-            msg.channel = channel + 1;
+            msg.midi.channel = channel + 1;
 
-            msg.type = midiTypes[type];
+            msg.midi.type = midiTypes[type];
             msg.topic = node.input.getPortName(parseInt(config.midiport));
             node.send(msg);
         });
@@ -78,7 +79,7 @@ module.exports = function(RED) {
         node.on("input", function(msg) {
             node.output.sendMessage(msg.payload);
         });
-        
+
         node.on("close", function() {
             node.output.closePort();
             delete outputPortID[node.id];
