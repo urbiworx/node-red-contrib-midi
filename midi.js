@@ -22,9 +22,13 @@ module.exports = function(RED) {
     var outputPortID = {};
 
     var midiTypes = {
-        '11': 'controlchange',
-        '9': 'noteon',
         '8': 'noteoff',
+        '9': 'noteon',
+        '10': 'polyat',
+        '11': 'controlchange',
+        '12': 'programchange',
+        '13': 'channelat',
+        '14': 'pitchbend'
     };
 
     function MidiInputNode(config) {
