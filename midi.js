@@ -36,27 +36,40 @@ module.exports = function(RED) {
         var node = this;
 
         node.input = new midi.input();
+        node.virtualInput = new midi.input();
+        node.virtualInput.openVirtualPort("Node-RED Midi In");
+
         inputPortID[node.id] = config.midiport;
 
-        node.input.on('message', function(deltaTime, message) {
-            var msg = {};
-            msg.midi = {};
-            msg.midi.raw = message.slice();
-            msg.midi.deltaTime = deltaTime;
-            msg.payload = message.splice(1);
-            var channel = message & 0xF;
-            var type = message >> 4;
-            msg.midi.channel = channel + 1;
+        node.processInput = function (deltaTime, message) {
+          var msg = {};
+          msg.midi = {};
+          msg.midi.raw = message.slice();
+          msg.midi.deltaTime = deltaTime;
+          msg.payload = message.splice(1);
+          var channel = message & 0xF;
+          var type = message >> 4;
+          msg.midi.channel = channel + 1;
 
-            msg.midi.type = midiTypes[type];
-            msg.topic = node.input.getPortName(parseInt(config.midiport));
-            node.send(msg);
-        });
+          msg.midi.type = midiTypes[type];
+          msg.topic = node.input.getPortName(parseInt(config.midiport));
+          node.send(msg);
+        };
 
-        node.input.openPort(parseInt(inputPortID[node.id]));
+        node.input.on('message', node.processInput);
+
+        // If VirtualPort will cause error
+        try {
+          node.input.openPort(parseInt(inputPortID[node.id]));
+        }
+        catch(err) {
+          node.virtualInput.on('message', node.processInput);
+        }
+
 
         node.on("close", function() {
             node.input.closePort();
+            node.virtualInput.closePort();
             delete inputPortID[node.id];
         });
 
@@ -72,6 +85,8 @@ module.exports = function(RED) {
         var node = this;
 
         node.output = new midi.output();
+        node.virtualOutput = new midi.output();
+        node.virtualOutput.openVirtualPort("Node-RED Midi Out");
         outputPortID[node.id] = config.midiport;
 
         node.output.openPort(parseInt(outputPortID[node.id]));
@@ -82,6 +97,7 @@ module.exports = function(RED) {
 
         node.on("close", function() {
             node.output.closePort();
+            node.virtualOutput.closePort();
             delete outputPortID[node.id];
         });
 
