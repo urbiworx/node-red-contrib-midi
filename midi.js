@@ -37,7 +37,7 @@ module.exports = function(RED) {
 
         node.input = new midi.input();
         node.virtualInput = new midi.input();
-        node.virtualInput.openVirtualPort("Node-RED Midi In");
+        node.virtualInput.openVirtualPort("to Node-RED");
 
         inputPortID[node.id] = config.midiport;
 
@@ -86,14 +86,14 @@ module.exports = function(RED) {
 
         node.output = new midi.output();
         node.virtualOutput = new midi.output();
-        node.virtualOutput.openVirtualPort("Node-RED Midi Out");
+        node.virtualOutput.openVirtualPort("from Node-RED");
         outputPortID[node.id] = config.midiport;
 
         node.output.openPort(parseInt(outputPortID[node.id]));
 
         node.on("input", function(msg) {
             node.output.sendMessage(msg.payload);
-            if (node.output.getPortName(parseInt(config.midiport)) === 'Node-RED Midi In') {
+            if (node.output.getPortName(parseInt(config.midiport)) === 'to Node-RED') {
               node.virtualOutput.sendMessage(msg.payload);
             }
         });
