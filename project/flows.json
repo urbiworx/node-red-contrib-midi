@@ -11,7 +11,7 @@
         "name": "",
         "midiport": "2",
         "x": 249,
-        "y": 178,
+        "y": 173,
         "wires": [
             [
                 "4913238a.b6ecdc",
@@ -121,9 +121,9 @@
         "type": "midi out",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "1",
+        "midiport": "2",
         "x": 420,
-        "y": 400,
+        "y": 397,
         "wires": []
     },
     {

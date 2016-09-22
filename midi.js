@@ -93,6 +93,9 @@ module.exports = function(RED) {
 
         node.on("input", function(msg) {
             node.output.sendMessage(msg.payload);
+            if (node.output.getPortName(parseInt(config.midiport)) === 'Node-RED Midi In') {
+              node.virtualOutput.sendMessage(msg.payload);
+            }
         });
 
         node.on("close", function() {
