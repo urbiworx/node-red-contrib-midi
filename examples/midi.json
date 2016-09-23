@@ -1,10 +1,5 @@
 [
     {
-        "id": "3fab23bb.c054dc",
-        "type": "tab",
-        "label": "Flow 1"
-    },
-    {
         "id": "349fc24b.cb603e",
         "type": "midi in",
         "z": "3fab23bb.c054dc",

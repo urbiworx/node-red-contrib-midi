@@ -129,6 +129,9 @@ module.exports = function(RED) {
 
     RED.httpAdmin.get('/midi/input/ports', function(req, res, next) {
         var configInput = new midi.input();
+        configInput.on('message', function(message, deltaTime) {
+          return;
+        });
         var portCount = configInput.getPortCount();
         var portNames = [];
 

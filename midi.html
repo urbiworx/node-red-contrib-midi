@@ -122,11 +122,62 @@
     </div>
 </script>
 
-
-
 <script type="text/x-red" data-help-name="midi in">
-  Configure a midi input by specifing an input midi port. This node outputs json messages in the format <pre>message:[144,36,64],deltaTime:0.67}</pre>.
-  Messages can be filtered by using the optional message attribute. Setting the message attribute to '144,36,64' will only allow the example message above.
-  <br/>
+  Configure a midi input by specifing a midi input port. The <code>msg</code> has a <code>msg.midi</code> object with the following values:
+  <pre>
+  {
+    type: MIDI message type as a string (see types below),
+    channel: MIDI channel (1-16),
+    data: MIDI data values as an array,
+    raw: Raw MIDI byte as an array
+  }
+  </pre>
+
+  MIDI types can be the following:
+  <ul>
+    <li>noteon</li>
+    <li>noteoff</li>
+    <li>controlchange</li>
+    <li>pitchbend</li>
+    <li>polyat</li>
+    <li>programchange</li>
+    <li>channelat</li>
+  </ul>
+  The <code>payload</code> also contains the MIDI data as an array.
   Windows User might want to use <a href="http://www.nerds.de/en/loopbe1.html">LoopBe1</a> and <a href="http://vmpk.sourceforge.net/">Virtual Midi Piano Keyboard</a>.
+</script>
+
+<script type="text/x-red" data-help-name="midi out">
+  Configure a midi output by specifing a midi output port. Raw MIDI bytes can be sent as an Array in <code>msg.payload</code>:
+  <pre>[176,1,127]</pre>
+  A <code>msg.midi</code> object can also be sent and should be formatted like this:
+  <pre>
+  {
+    type: MIDI message type as a string (see types below),
+    channel: MIDI channel (1-16),
+    data: MIDI data values as an array,
+    raw: Raw MIDI byte as an array
+  }
+  </pre>
+
+  Example:
+
+  <pre>
+  {
+    type: 'noteon',
+    channel: 1,
+    data: [60,127]
+  }
+  </pre>
+
+  MIDI types can be the following:
+  <ul>
+    <li>noteon</li>
+    <li>noteoff</li>
+    <li>controlchange</li>
+    <li>pitchbend</li>
+    <li>polyat</li>
+    <li>programchange</li>
+    <li>channelat</li>
+  </ul>
 </script>
