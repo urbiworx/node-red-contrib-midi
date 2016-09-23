@@ -45,13 +45,13 @@ module.exports = function(RED) {
           var msg = {};
           msg.midi = {};
           msg.midi.raw = message.slice();
-          msg.midi.deltaTime = deltaTime;
           msg.payload = message.splice(1);
-          var channel = message & 0xF;
-          var type = message >> 4;
-          msg.midi.channel = channel + 1;
 
-          msg.midi.type = midiTypes[type];
+          msg.midi.deltaTime = deltaTime;
+          msg.midi.channel = (message & 0xF) + 1;
+          msg.midi.type = midiTypes[message >> 4];
+          msg.midi.data = msg.payload;
+
           msg.topic = node.input.getPortName(parseInt(config.midiport));
           node.send(msg);
         };
@@ -92,10 +92,26 @@ module.exports = function(RED) {
         node.output.openPort(parseInt(outputPortID[node.id]));
 
         node.on("input", function(msg) {
-            node.output.sendMessage(msg.payload);
-            if (node.output.getPortName(parseInt(config.midiport)) === 'to Node-RED') {
-              node.virtualOutput.sendMessage(msg.payload);
+          if (msg.midi) {
+            var message = [];
+            var channel = msg.midi.channel || 1;
+            var type;
+            for (var key in midiTypes) {
+              if (midiTypes[key] == msg.midi.type) {
+                type = key;
+              }
             }
+            var statusByte = type << 4 | (channel - 1);
+            message.push(statusByte);
+            message = message.concat(msg.midi.data);
+
+            msg.payload = message;
+          }
+
+          node.output.sendMessage(msg.payload);
+          if (node.output.getPortName(parseInt(config.midiport)) === 'to Node-RED') {
+            node.virtualOutput.sendMessage(msg.payload);
+          }
         });
 
         node.on("close", function() {

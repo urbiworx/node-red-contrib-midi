@@ -9,9 +9,9 @@
         "type": "midi in",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "2",
-        "x": 249,
-        "y": 170,
+        "midiport": "0",
+        "x": 250,
+        "y": 180,
         "wires": [
             [
                 "4913238a.b6ecdc",
@@ -121,9 +121,9 @@
         "type": "midi out",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "2",
+        "midiport": "0",
         "x": 420,
-        "y": 397,
+        "y": 380,
         "wires": []
     },
     {
@@ -137,8 +137,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 181,
-        "y": 399,
+        "x": 240,
+        "y": 380,
         "wires": [
             [
                 "9f1818a6.60e7e8"
@@ -166,7 +166,7 @@
         ],
         "checkall": "true",
         "outputs": 2,
-        "x": 860,
+        "x": 740,
         "y": 160,
         "wires": [
             [
@@ -182,10 +182,10 @@
         "type": "debug",
         "z": "3fab23bb.c054dc",
         "name": "CC1",
-        "active": false,
+        "active": true,
         "console": "false",
         "complete": "payload",
-        "x": 1110,
+        "x": 890,
         "y": 140,
         "wires": []
     },
@@ -197,7 +197,7 @@
         "active": false,
         "console": "false",
         "complete": "payload",
-        "x": 1110,
+        "x": 890,
         "y": 180,
         "wires": []
     },
@@ -208,9 +208,98 @@
         "name": "",
         "active": true,
         "console": "false",
+        "complete": "midi",
+        "x": 340,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "e5f81316.30f87",
+        "type": "template",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "json",
+        "syntax": "mustache",
+        "template": "{\n    \"type\": \"noteon\",\n    \"channel\": 2,\n    \"data\": [1,127]\n}",
+        "x": 250,
+        "y": 480,
+        "wires": [
+            [
+                "ded915cd.c5501"
+            ]
+        ]
+    },
+    {
+        "id": "4636226b.582e5c",
+        "type": "inject",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "topic": "",
+        "payload": "127",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 90,
+        "y": 480,
+        "wires": [
+            [
+                "e5f81316.30f87"
+            ]
+        ]
+    },
+    {
+        "id": "ded915cd.c5501",
+        "type": "json",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "x": 400,
+        "y": 480,
+        "wires": [
+            [
+                "8d463bae.992ba"
+            ]
+        ]
+    },
+    {
+        "id": "8d463bae.992ba",
+        "type": "change",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "midi",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 550,
+        "y": 480,
+        "wires": [
+            [
+                "9f1818a6.60e7e8"
+            ]
+        ]
+    },
+    {
+        "id": "9bfc9b81.6bf98",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "active": true,
+        "console": "false",
         "complete": "false",
-        "x": 362.5,
-        "y": 289,
+        "x": 350,
+        "y": 280,
         "wires": []
     }
 ]
