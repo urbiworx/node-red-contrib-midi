@@ -41,29 +41,28 @@ module.exports = function(RED) {
 
         inputPortID[node.id] = config.midiport;
 
-        node.processInput = function (deltaTime, message) {
-          var msg = {};
-          msg.midi = {};
-          msg.midi.raw = message.slice();
-          msg.payload = message.splice(1);
+        node.processInput = function(deltaTime, message) {
+            var msg = {};
+            msg.midi = {};
+            msg.midi.raw = message.slice();
+            msg.payload = message.splice(1);
 
-          msg.midi.deltaTime = deltaTime;
-          msg.midi.channel = (message & 0xF) + 1;
-          msg.midi.type = midiTypes[message >> 4];
-          msg.midi.data = msg.payload;
+            msg.midi.deltaTime = deltaTime;
+            msg.midi.channel = (message & 0xF) + 1;
+            msg.midi.type = midiTypes[message >> 4];
+            msg.midi.data = msg.payload;
 
-          msg.topic = node.input.getPortName(parseInt(config.midiport));
-          node.send(msg);
+            msg.topic = node.input.getPortName(parseInt(config.midiport));
+            node.send(msg);
         };
 
         node.input.on('message', node.processInput);
 
         // If VirtualPort will cause error
         try {
-          node.input.openPort(parseInt(inputPortID[node.id]));
-        }
-        catch(err) {
-          node.virtualInput.on('message', node.processInput);
+            node.input.openPort(parseInt(inputPortID[node.id]));
+        } catch (err) {
+            node.virtualInput.on('message', node.processInput);
         }
 
 
@@ -92,26 +91,26 @@ module.exports = function(RED) {
         node.output.openPort(parseInt(outputPortID[node.id]));
 
         node.on("input", function(msg) {
-          if (msg.midi) {
-            var message = [];
-            var channel = msg.midi.channel || 1;
-            var type;
-            for (var key in midiTypes) {
-              if (midiTypes[key] == msg.midi.type) {
-                type = key;
-              }
+            if (msg.midi) {
+                var message = [];
+                var channel = msg.midi.channel || 1;
+                var type;
+                for (var key in midiTypes) {
+                    if (midiTypes[key] == msg.midi.type) {
+                        type = key;
+                    }
+                }
+                var statusByte = type << 4 | (channel - 1);
+                message.push(statusByte);
+                message = message.concat(msg.midi.data);
+
+                msg.payload = message;
             }
-            var statusByte = type << 4 | (channel - 1);
-            message.push(statusByte);
-            message = message.concat(msg.midi.data);
 
-            msg.payload = message;
-          }
-
-          node.output.sendMessage(msg.payload);
-          if (node.output.getPortName(parseInt(config.midiport)) === 'to Node-RED') {
-            node.virtualOutput.sendMessage(msg.payload);
-          }
+            node.output.sendMessage(msg.payload);
+            if (node.output.getPortName(parseInt(config.midiport)) === 'to Node-RED') {
+                node.virtualOutput.sendMessage(msg.payload);
+            }
         });
 
         node.on("close", function() {
@@ -130,7 +129,7 @@ module.exports = function(RED) {
     RED.httpAdmin.get('/midi/input/ports', function(req, res, next) {
         var configInput = new midi.input();
         configInput.on('message', function(message, deltaTime) {
-          return;
+            return;
         });
         var portCount = configInput.getPortCount();
         var portNames = [];
