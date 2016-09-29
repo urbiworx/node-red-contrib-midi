@@ -9,7 +9,7 @@
         "type": "midi in",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "0",
+        "midiport": "2",
         "x": 110,
         "y": 120,
         "wires": [
@@ -117,16 +117,6 @@
         "wires": []
     },
     {
-        "id": "9f1818a6.60e7e8",
-        "type": "midi out",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "midiport": "0",
-        "x": 740,
-        "y": 440,
-        "wires": []
-    },
-    {
         "id": "6a922a23.956dd4",
         "type": "inject",
         "z": "3fab23bb.c054dc",
@@ -140,9 +130,7 @@
         "x": 140,
         "y": 380,
         "wires": [
-            [
-                "9f1818a6.60e7e8"
-            ]
+            []
         ]
     },
     {
@@ -285,9 +273,7 @@
         "x": 570,
         "y": 480,
         "wires": [
-            [
-                "9f1818a6.60e7e8"
-            ]
+            []
         ]
     },
     {
