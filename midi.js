@@ -19,13 +19,16 @@ module.exports = function(RED) {
 
     var midi = require('midi');
 
-    console.log('RED INIT !');
+    console.log('deploy !');
 
     var virtualInput = new midi.input();
     virtualInput.openVirtualPort("to Node-RED");
 
     var virtualOutput = new midi.output();
     virtualOutput.openVirtualPort("from Node-RED");
+
+    var inputCount = 0;
+    var outputCount = 0;
 
     var inputPortID = {};
     var outputPortID = {};
@@ -43,6 +46,8 @@ module.exports = function(RED) {
     function MidiInputNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
+        //node.warn('inport open ?' + virtualInput.isPortOpen());
+        //node.warn('outport open ?' + virtualOutput.isPortOpen());
 
         node.input = new midi.input();
 
@@ -79,14 +84,14 @@ module.exports = function(RED) {
         node.input.on('message', node.processInput);
         virtualInput.on('message', node.processVirtualInput);
 
-        node.warn(`Opening port ${inputPortID[node.id]}`);
-        node.warn(node.portName);
-
         node.input.openPort(inputPortID[node.id]);
 
         node.on("close", function() {
+            inputCount--;
+            node.warn('OutputCount ' + outputCount);
             node.input.closePort();
             //virtualInput.closePort();
+            //virtualOutput.closePort();
             delete inputPortID[node.id];
         });
 
@@ -103,9 +108,7 @@ module.exports = function(RED) {
 
         node.output = new midi.output();
         outputPortID[node.id] = parseInt(config.midiport);
-        node.warn('hello ' + outputPortID[node.id]);
         node.portName = node.output.getPortName(outputPortID[node.id]);
-        node.warn('portname: ' + node.portName);
 
         node.output.openPort(outputPortID[node.id]);
 
@@ -134,7 +137,10 @@ module.exports = function(RED) {
         });
 
         node.on("close", function() {
+            outputCount--;
+            node.warn('OutputCount ' + outputCount);
             node.output.closePort();
+            //virtualInput.closePort();
             //virtualOutput.closePort();
             delete outputPortID[node.id];
         });

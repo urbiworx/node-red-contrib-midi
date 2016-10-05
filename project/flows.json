@@ -5,21 +5,6 @@
         "label": "Flow 1"
     },
     {
-        "id": "349fc24b.cb603e",
-        "type": "midi in",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "midiport": "2",
-        "x": 110,
-        "y": 120,
-        "wires": [
-            [
-                "4913238a.b6ecdc",
-                "bd86e089.58fe8"
-            ]
-        ]
-    },
-    {
         "id": "4913238a.b6ecdc",
         "type": "switch",
         "z": "3fab23bb.c054dc",
@@ -130,9 +115,7 @@
         "x": 140,
         "y": 380,
         "wires": [
-            [
-                "ba1760f5.8a6ef8"
-            ]
+            []
         ]
     },
     {
@@ -299,20 +282,6 @@
         "wires": []
     },
     {
-        "id": "c0f645e6.4cce98",
-        "type": "midi in",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "midiport": "0",
-        "x": 110,
-        "y": 260,
-        "wires": [
-            [
-                "7ecbdd34.14a814"
-            ]
-        ]
-    },
-    {
         "id": "7ecbdd34.14a814",
         "type": "debug",
         "z": "3fab23bb.c054dc",
@@ -322,26 +291,6 @@
         "complete": "false",
         "x": 320,
         "y": 260,
-        "wires": []
-    },
-    {
-        "id": "ba1760f5.8a6ef8",
-        "type": "midi out",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "midiport": "0",
-        "x": 660,
-        "y": 680,
-        "wires": []
-    },
-    {
-        "id": "1e03ea4e.db048e",
-        "type": "midi out",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "midiport": "2",
-        "x": 660,
-        "y": 740,
         "wires": []
     },
     {
@@ -358,9 +307,46 @@
         "x": 180,
         "y": 680,
         "wires": [
-            [
-                "1e03ea4e.db048e"
-            ]
+            []
         ]
+    },
+    {
+        "id": "fa4263a0.6f5458",
+        "type": "inject",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 120,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "99b20c06.60fdf8",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "0",
+        "x": 270,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b08333ca.00b108",
+        "type": "midi out",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "0",
+        "x": 340,
+        "y": 700,
+        "wires": []
     }
 ]
