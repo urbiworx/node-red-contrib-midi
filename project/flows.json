@@ -130,7 +130,9 @@
         "x": 140,
         "y": 380,
         "wires": [
-            []
+            [
+                "ba1760f5.8a6ef8"
+            ]
         ]
     },
     {
@@ -194,7 +196,7 @@
         "type": "debug",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "midi",
         "x": 200,
@@ -277,18 +279,6 @@
         ]
     },
     {
-        "id": "9bfc9b81.6bf98",
-        "type": "debug",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "false",
-        "x": 210,
-        "y": 220,
-        "wires": []
-    },
-    {
         "id": "24cca9fb.f9f78e",
         "type": "comment",
         "z": "3fab23bb.c054dc",
@@ -307,5 +297,70 @@
         "x": 140,
         "y": 440,
         "wires": []
+    },
+    {
+        "id": "c0f645e6.4cce98",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "0",
+        "x": 110,
+        "y": 260,
+        "wires": [
+            [
+                "7ecbdd34.14a814"
+            ]
+        ]
+    },
+    {
+        "id": "7ecbdd34.14a814",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 320,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "ba1760f5.8a6ef8",
+        "type": "midi out",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "0",
+        "x": 660,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "1e03ea4e.db048e",
+        "type": "midi out",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "2",
+        "x": 660,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "88b81c14.2781b8",
+        "type": "inject",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "topic": "",
+        "payload": "[176,1,127]",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 180,
+        "y": 680,
+        "wires": [
+            [
+                "1e03ea4e.db048e"
+            ]
+        ]
     }
 ]

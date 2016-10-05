@@ -16,7 +16,16 @@
 
 module.exports = function(RED) {
     "use strict";
+
     var midi = require('midi');
+
+    console.log('RED INIT !');
+
+    var virtualInput = new midi.input();
+    virtualInput.openVirtualPort("to Node-RED");
+
+    var virtualOutput = new midi.output();
+    virtualOutput.openVirtualPort("from Node-RED");
 
     var inputPortID = {};
     var outputPortID = {};
@@ -36,12 +45,11 @@ module.exports = function(RED) {
         var node = this;
 
         node.input = new midi.input();
-        node.virtualInput = new midi.input();
-        node.virtualInput.openVirtualPort("to Node-RED");
 
-        inputPortID[node.id] = config.midiport;
+        inputPortID[node.id] = parseInt(config.midiport);
+        node.portName = node.input.getPortName(parseInt(inputPortID[node.id]));
 
-        node.processInput = function(deltaTime, message) {
+        node.parseMidi = function(deltaTime, message) {
             var msg = {};
             msg.midi = {};
             msg.midi.raw = message.slice();
@@ -53,22 +61,32 @@ module.exports = function(RED) {
             msg.midi.data = msg.payload;
 
             msg.topic = node.input.getPortName(parseInt(config.midiport));
+            return msg;
+        };
+
+        node.processInput = function(deltaTime, message) {
+            var msg = node.parseMidi(deltaTime, message);
             node.send(msg);
         };
 
+        node.processVirtualInput = function(deltaTime, message) {
+            if (node.portName === 'from Node-RED') {
+                var msg = node.parseMidi(deltaTime, message);
+                node.send(msg);
+            }
+        };
+
         node.input.on('message', node.processInput);
+        virtualInput.on('message', node.processVirtualInput);
 
-        // If VirtualPort will cause error
-        try {
-            node.input.openPort(parseInt(inputPortID[node.id]));
-        } catch (err) {
-            node.virtualInput.on('message', node.processInput);
-        }
+        node.warn(`Opening port ${inputPortID[node.id]}`);
+        node.warn(node.portName);
 
+        node.input.openPort(inputPortID[node.id]);
 
         node.on("close", function() {
             node.input.closePort();
-            node.virtualInput.closePort();
+            //virtualInput.closePort();
             delete inputPortID[node.id];
         });
 
@@ -84,11 +102,12 @@ module.exports = function(RED) {
         var node = this;
 
         node.output = new midi.output();
-        node.virtualOutput = new midi.output();
-        node.virtualOutput.openVirtualPort("from Node-RED");
-        outputPortID[node.id] = config.midiport;
+        outputPortID[node.id] = parseInt(config.midiport);
+        node.warn('hello ' + outputPortID[node.id]);
+        node.portName = node.output.getPortName(outputPortID[node.id]);
+        node.warn('portname: ' + node.portName);
 
-        node.output.openPort(parseInt(outputPortID[node.id]));
+        node.output.openPort(outputPortID[node.id]);
 
         node.on("input", function(msg) {
             if (msg.midi) {
@@ -107,15 +126,16 @@ module.exports = function(RED) {
                 msg.payload = message;
             }
 
-            node.output.sendMessage(msg.payload);
-            if (node.output.getPortName(parseInt(config.midiport)) === 'to Node-RED') {
-                node.virtualOutput.sendMessage(msg.payload);
+            if (node.portName === 'to Node-RED') {
+                virtualOutput.sendMessage(msg.payload);
+            } else {
+                node.output.sendMessage(msg.payload);
             }
         });
 
         node.on("close", function() {
             node.output.closePort();
-            node.virtualOutput.closePort();
+            //virtualOutput.closePort();
             delete outputPortID[node.id];
         });
 
