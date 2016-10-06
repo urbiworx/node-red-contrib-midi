@@ -5,6 +5,11 @@
         "label": "Flow 1"
     },
     {
+        "id": "c926adf4.fa1738",
+        "type": "tab",
+        "label": "Flow 2"
+    },
+    {
         "id": "4913238a.b6ecdc",
         "type": "switch",
         "z": "3fab23bb.c054dc",
@@ -58,7 +63,7 @@
         "type": "debug",
         "z": "3fab23bb.c054dc",
         "name": "cc",
-        "active": false,
+        "active": true,
         "console": "false",
         "complete": "payload",
         "x": 430,
@@ -115,7 +120,9 @@
         "x": 140,
         "y": 380,
         "wires": [
-            []
+            [
+                "84609960.67ca3"
+            ]
         ]
     },
     {
@@ -172,18 +179,6 @@
         "complete": "payload",
         "x": 750,
         "y": 120,
-        "wires": []
-    },
-    {
-        "id": "bd86e089.58fe8",
-        "type": "debug",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "active": false,
-        "console": "false",
-        "complete": "midi",
-        "x": 200,
-        "y": 180,
         "wires": []
     },
     {
@@ -282,71 +277,136 @@
         "wires": []
     },
     {
-        "id": "7ecbdd34.14a814",
+        "id": "84609960.67ca3",
+        "type": "midi out",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "3",
+        "x": 340,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "8d2b17e6.5988",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "3",
+        "x": 80,
+        "y": 120,
+        "wires": [
+            [
+                "4913238a.b6ecdc",
+                "e15ec479.7b6cb"
+            ]
+        ]
+    },
+    {
+        "id": "76136f4b.dcbf5",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "0",
+        "x": 140,
+        "y": 560,
+        "wires": [
+            [
+                "2d8152b2.10df26"
+            ]
+        ]
+    },
+    {
+        "id": "2d8152b2.10df26",
         "type": "debug",
         "z": "3fab23bb.c054dc",
         "name": "",
         "active": true,
         "console": "false",
         "complete": "false",
-        "x": 320,
+        "x": 350,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "2bc8a550.0afbc2",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "3",
+        "x": 140,
+        "y": 600,
+        "wires": [
+            [
+                "18c6677c.05ff79"
+            ]
+        ]
+    },
+    {
+        "id": "18c6677c.05ff79",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 310,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "e15ec479.7b6cb",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 160,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "c92e3c1.b77e3c",
+        "type": "midi in",
+        "z": "c926adf4.fa1738",
+        "name": "",
+        "midiport": "1",
+        "x": 160,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c51c0fc6.bce468",
+        "type": "midi in",
+        "z": "c926adf4.fa1738",
+        "name": "",
+        "midiport": "2",
+        "x": 160,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d9209eb2.c7f4e8",
+        "type": "midi out",
+        "z": "c926adf4.fa1738",
+        "name": "",
+        "midiport": "1",
+        "x": 360,
         "y": 260,
         "wires": []
     },
     {
-        "id": "88b81c14.2781b8",
-        "type": "inject",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "topic": "",
-        "payload": "[176,1,127]",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 180,
-        "y": 680,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "fa4263a0.6f5458",
-        "type": "inject",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "x": 120,
-        "y": 80,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "99b20c06.60fdf8",
-        "type": "midi in",
-        "z": "3fab23bb.c054dc",
-        "name": "",
-        "midiport": "0",
-        "x": 270,
-        "y": 600,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "b08333ca.00b108",
+        "id": "6ad0a3dc.04093c",
         "type": "midi out",
-        "z": "3fab23bb.c054dc",
+        "z": "c926adf4.fa1738",
         "name": "",
-        "midiport": "0",
-        "x": 340,
-        "y": 700,
+        "midiport": "2",
+        "x": 360,
+        "y": 300,
         "wires": []
     }
 ]

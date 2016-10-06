@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Midi Node",
     "dependencies": {
-        "midi": "~0.9.5"
+        "midi": "natcl/node-midi"
     },
     "repository": {
         "type": "git",

@@ -22,13 +22,10 @@ module.exports = function(RED) {
     console.log('deploy !');
 
     var virtualInput = new midi.input();
-    virtualInput.openVirtualPort("to Node-RED");
-
     var virtualOutput = new midi.output();
+    virtualInput.openVirtualPort("to Node-RED");
     virtualOutput.openVirtualPort("from Node-RED");
-
-    var inputCount = 0;
-    var outputCount = 0;
+    var virtualPortsOpen = true;
 
     var inputPortID = {};
     var outputPortID = {};
@@ -46,10 +43,15 @@ module.exports = function(RED) {
     function MidiInputNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        //node.warn('inport open ?' + virtualInput.isPortOpen());
-        //node.warn('outport open ?' + virtualOutput.isPortOpen());
-
         node.input = new midi.input();
+
+        if (!virtualPortsOpen) {
+            virtualPortsOpen = true;
+            virtualInput = new midi.input();
+            virtualOutput = new midi.output();
+            virtualInput.openVirtualPort("to Node-RED");
+            virtualOutput.openVirtualPort("from Node-RED");
+        }
 
         inputPortID[node.id] = parseInt(config.midiport);
         node.portName = node.input.getPortName(parseInt(inputPortID[node.id]));
@@ -80,18 +82,21 @@ module.exports = function(RED) {
                 node.send(msg);
             }
         };
-
-        node.input.on('message', node.processInput);
-        virtualInput.on('message', node.processVirtualInput);
+        if (node.portName === "from Node-RED") {
+            virtualInput.on('message', node.processVirtualInput);
+        } else {
+            node.input.on('message', node.processInput);
+        }
 
         node.input.openPort(inputPortID[node.id]);
 
         node.on("close", function() {
-            inputCount--;
-            node.warn('OutputCount ' + outputCount);
             node.input.closePort();
-            //virtualInput.closePort();
-            //virtualOutput.closePort();
+            if (virtualPortsOpen) {
+                virtualPortsOpen = false;
+                virtualInput.closePort();
+                virtualOutput.closePort();
+            }
             delete inputPortID[node.id];
         });
 
@@ -107,6 +112,15 @@ module.exports = function(RED) {
         var node = this;
 
         node.output = new midi.output();
+
+        if (!virtualPortsOpen) {
+            virtualPortsOpen = true;
+            virtualInput = new midi.input();
+            virtualOutput = new midi.output();
+            virtualInput.openVirtualPort("to Node-RED");
+            virtualOutput.openVirtualPort("from Node-RED");
+        }
+
         outputPortID[node.id] = parseInt(config.midiport);
         node.portName = node.output.getPortName(outputPortID[node.id]);
 
@@ -137,11 +151,12 @@ module.exports = function(RED) {
         });
 
         node.on("close", function() {
-            outputCount--;
-            node.warn('OutputCount ' + outputCount);
             node.output.closePort();
-            //virtualInput.closePort();
-            //virtualOutput.closePort();
+            if (virtualPortsOpen) {
+                virtualPortsOpen = false;
+                virtualInput.closePort();
+                virtualOutput.closePort();
+            }
             delete outputPortID[node.id];
         });
 
