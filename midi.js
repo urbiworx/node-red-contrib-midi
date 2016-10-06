@@ -19,8 +19,6 @@ module.exports = function(RED) {
 
     var midi = require('midi');
 
-    console.log('deploy !');
-
     var virtualInput = new midi.input();
     var virtualOutput = new midi.output();
     virtualInput.openVirtualPort("to Node-RED");

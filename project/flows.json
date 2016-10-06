@@ -281,7 +281,7 @@
         "type": "midi out",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "3",
+        "midiport": "1",
         "x": 340,
         "y": 380,
         "wires": []
@@ -291,7 +291,7 @@
         "type": "midi in",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "3",
+        "midiport": "0",
         "x": 80,
         "y": 120,
         "wires": [
