@@ -57,10 +57,11 @@ module.exports = function(RED) {
         node.portName = node.input.getPortName(parseInt(inputPortID[node.id]));
 
         node.parseMidi = function(deltaTime, message) {
+
             var msg = {};
             msg.midi = {};
             msg.midi.raw = message.slice();
-            msg.payload = message.splice(1);
+            msg.payload = msg.midi.raw.splice(1);
 
             msg.midi.deltaTime = deltaTime;
             msg.midi.channel = (message & 0xF) + 1;
@@ -72,14 +73,12 @@ module.exports = function(RED) {
         };
 
         node.processInput = function(deltaTime, message) {
-            var msg = node.parseMidi(deltaTime, message);
-            node.send(msg);
+            node.send(node.parseMidi(deltaTime, message));
         };
 
         node.processVirtualInput = function(deltaTime, message) {
             if (node.portName === 'from Node-RED') {
-                var msg = node.parseMidi(deltaTime, message);
-                node.send(msg);
+                node.send(node.parseMidi(deltaTime, message));
             }
         };
         if (node.portName === "from Node-RED") {
@@ -145,6 +144,7 @@ module.exports = function(RED) {
 
             if (node.portName === 'to Node-RED') {
                 virtualOutput.sendMessage(msg.payload);
+                node.output.sendMessage(msg.payload);
             } else {
                 node.output.sendMessage(msg.payload);
             }
