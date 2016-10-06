@@ -291,7 +291,7 @@
         "type": "midi in",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "0",
+        "midiport": "1",
         "x": 80,
         "y": 120,
         "wires": [
