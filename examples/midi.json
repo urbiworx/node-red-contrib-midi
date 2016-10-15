@@ -1,0 +1,320 @@
+[
+    {
+        "id": "349fc24b.cb603e",
+        "type": "midi in",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "0",
+        "x": 110,
+        "y": 120,
+        "wires": [
+            [
+                "4913238a.b6ecdc",
+                "bd86e089.58fe8"
+            ]
+        ]
+    },
+    {
+        "id": "4913238a.b6ecdc",
+        "type": "switch",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "property": "midi.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "controlchange",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "noteon",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "noteoff",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "pitchbend",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 4,
+        "x": 250,
+        "y": 120,
+        "wires": [
+            [
+                "125fb388.eda04c",
+                "65de96b7.9a2168"
+            ],
+            [
+                "b4bd305c.4b42d"
+            ],
+            [
+                "e64f0316.19b1"
+            ],
+            [
+                "d6d8d908.292728"
+            ]
+        ]
+    },
+    {
+        "id": "125fb388.eda04c",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "cc",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 430,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "b4bd305c.4b42d",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "noteon",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 440,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "e64f0316.19b1",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "noteoff",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 440,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "d6d8d908.292728",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "pitchbend",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 440,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "9f1818a6.60e7e8",
+        "type": "midi out",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "midiport": "0",
+        "x": 740,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "6a922a23.956dd4",
+        "type": "inject",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "topic": "",
+        "payload": "[176,1,127]",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 140,
+        "y": 380,
+        "wires": [
+            [
+                "9f1818a6.60e7e8"
+            ]
+        ]
+    },
+    {
+        "id": "65de96b7.9a2168",
+        "type": "switch",
+        "z": "3fab23bb.c054dc",
+        "name": "CC filter",
+        "property": "payload[0]",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 600,
+        "y": 100,
+        "wires": [
+            [
+                "2238d341.ddc72c"
+            ],
+            [
+                "80fb62dc.7f04a"
+            ]
+        ]
+    },
+    {
+        "id": "2238d341.ddc72c",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "CC1",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 750,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "80fb62dc.7f04a",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "CC2",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 750,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "bd86e089.58fe8",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "midi",
+        "x": 200,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "e5f81316.30f87",
+        "type": "template",
+        "z": "3fab23bb.c054dc",
+        "name": "midiObject",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "json",
+        "syntax": "mustache",
+        "template": "{\n    \"type\": \"noteon\",\n    \"channel\": 2,\n    \"data\": [1,127]\n}",
+        "x": 270,
+        "y": 480,
+        "wires": [
+            [
+                "ded915cd.c5501"
+            ]
+        ]
+    },
+    {
+        "id": "4636226b.582e5c",
+        "type": "inject",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "num",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 130,
+        "y": 480,
+        "wires": [
+            [
+                "e5f81316.30f87"
+            ]
+        ]
+    },
+    {
+        "id": "ded915cd.c5501",
+        "type": "json",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "x": 410,
+        "y": 480,
+        "wires": [
+            [
+                "8d463bae.992ba"
+            ]
+        ]
+    },
+    {
+        "id": "8d463bae.992ba",
+        "type": "change",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "midi",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 480,
+        "wires": [
+            [
+                "9f1818a6.60e7e8"
+            ]
+        ]
+    },
+    {
+        "id": "9bfc9b81.6bf98",
+        "type": "debug",
+        "z": "3fab23bb.c054dc",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 210,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "24cca9fb.f9f78e",
+        "type": "comment",
+        "z": "3fab23bb.c054dc",
+        "name": "Send raw bytes as Array",
+        "info": "",
+        "x": 170,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "db1fc43f.7e0cf8",
+        "type": "comment",
+        "z": "3fab23bb.c054dc",
+        "name": "Send MIDI object",
+        "info": "",
+        "x": 140,
+        "y": 440,
+        "wires": []
+    }
+]

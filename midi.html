@@ -1,5 +1,5 @@
 <!--
-  Copyright 2015 Urbiworx
+  Copyright 2016 Urbiworx, Nathanaël Lécaudé
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -11,46 +11,173 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="midi">
+
+<!-- Input node -->
+<script type="text/javascript">
+    RED.nodes.registerType('midi in',{
+      category: 'input',
+      defaults: {
+        name: {value:""},
+		    midiport: {value:"0"}
+      },
+      color:"BurlyWood",
+      icon: "midi_port.png",
+      inputs:0,
+      outputs:1,
+      align: "left",
+      label: function() {
+          return this.name || "midi in"
+      },
+      labelStyle: function() {
+          return this.name ? "node_label_italic":"";
+      },
+      oneditprepare: function() {
+        var id = this.id;
+        $.ajax({
+          url: "midi/input/ports",
+          success: function(data) {
+            var ports = JSON.parse(data);
+            $.each(ports, function (i, item) {
+              $('#node-input-midiport').append($('<option>', {value: i, text: item}));
+            });
+            $.ajax({
+              url: "midi/input/ports/" + id + "/current",
+              success: function(data) {
+                $('#node-input-midiport').val(JSON.parse(data));
+              }
+            })
+          }
+        })
+      },
+      oneditsave: function() {
+        //console.log($('#node-input-midiport').val());
+      }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="midi in">
     <div class="form-row node-input-name">
-         <label for="node-input-name"><i class="fa fa-file"></i> Name</label>
+         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
          <input type="text" id="node-input-name" placeholder="name">
     </div>
-    <div class="form-row node-input-filtermessage">
-         <label for="node-input-filtermessage"><i class="fa fa-file"></i> Message</label>
-         <input type="text" id="node-input-filtermessage" placeholder="144,36,64">
-    </div>
-     <div class="form-row node-input-port">
-         <label for="node-input-port"><i class="fa fa-file"></i> Port</label>
-         <input type="text" id="node-input-port" placeholder="0">
+     <div class="form-row">
+         <label for="node-input-midiport"><i class="fa fa-random"></i> Port</label>
+         <select id="node-input-midiport">
+         </select>
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="midi">
-
-Configure a midi input by specifing an input midi port. This node outputs json messages in the format <pre>message:[144,36,64],deltaTime:0.67}</pre>. 
-Messages can be filtered by using the optional message attribute. Setting the message attribute to '144,36,64' will only allow the example message above.
-<br/>
-Windows User might want to use <a href="http://www.nerds.de/en/loopbe1.html">LoopBe1</a> and <a href="http://vmpk.sourceforge.net/">Virtual Midi Piano Keyboard</a>.
-</script>
-
+<!-- Output node -->
 <script type="text/javascript">
-    RED.nodes.registerType('midi',{
-        category: 'function',
-        defaults: {
-            name: {value:""},
-			filtermessage: {value:""},
-			port: {value:0}
-        },
-        color:"BurlyWood",
-        inputs:0,
-        outputs:1,
-        align: "right",
-        label: function() {
-            return this.name||"Midi"
-        },
-        labelStyle: function() {
-            return this.name?"node_label_italic":"";
-        }
+    RED.nodes.registerType('midi out',{
+      category: 'output',
+      defaults: {
+        name: {value:""},
+		    midiport: {value:"0"}
+      },
+      color:"BurlyWood",
+      icon: "midi_port.png",
+      inputs:1,
+      outputs:0,
+      align: "right",
+      label: function() {
+          return this.name || "midi out"
+      },
+      labelStyle: function() {
+          return this.name ? "node_label_italic":"";
+      },
+      oneditprepare: function() {
+        var id = this.id;
+        $.ajax({
+          url: "midi/output/ports",
+          success: function(data) {
+            var ports = JSON.parse(data);
+            $.each(ports, function (i, item) {
+              $('#node-input-midiport').append($('<option>', {value: i, text: item}));
+            });
+            $.ajax({
+              url: "midi/output/ports/" + id + "/current",
+              success: function(data) {
+                $('#node-input-midiport').val(JSON.parse(data));
+              }
+            })
+          }
+        })
+      },
+      oneditsave: function() {
+        //console.log($('#node-input-midiport').val());
+      }
     });
+</script>
+
+<script type="text/x-red" data-template-name="midi out">
+    <div class="form-row node-input-name">
+         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+         <input type="text" id="node-input-name" placeholder="name">
+    </div>
+     <div class="form-row">
+         <label for="node-input-midiport"><i class="fa fa-random"></i> Port</label>
+         <select id="node-input-midiport">
+         </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="midi in">
+  Configure a midi input by specifing a midi input port. The <code>msg</code> has a <code>msg.midi</code> object with the following values:
+  <pre>
+  {
+    type: MIDI message type as a string (see types below),
+    channel: MIDI channel (1-16),
+    data: MIDI data values as an array,
+    raw: Raw MIDI byte as an array
+  }
+  </pre>
+
+  MIDI types can be the following:
+  <ul>
+    <li>noteon</li>
+    <li>noteoff</li>
+    <li>controlchange</li>
+    <li>pitchbend</li>
+    <li>polyat</li>
+    <li>programchange</li>
+    <li>channelat</li>
+  </ul>
+  The <code>payload</code> also contains the MIDI data as an array.
+  Windows User might want to use <a href="http://www.nerds.de/en/loopbe1.html">LoopBe1</a> and <a href="http://vmpk.sourceforge.net/">Virtual Midi Piano Keyboard</a>.
+</script>
+
+<script type="text/x-red" data-help-name="midi out">
+  Configure a midi output by specifing a midi output port. Raw MIDI bytes can be sent as an Array in <code>msg.payload</code>:
+  <pre>[176,1,127]</pre>
+  A <code>msg.midi</code> object can also be sent and should be formatted like this:
+  <pre>
+  {
+    type: MIDI message type as a string (see types below),
+    channel: MIDI channel (1-16),
+    data: MIDI data values as an array,
+    raw: Raw MIDI byte as an array
+  }
+  </pre>
+
+  Example:
+
+  <pre>
+  {
+    type: 'noteon',
+    channel: 1,
+    data: [60,127]
+  }
+  </pre>
+
+  MIDI types can be the following:
+  <ul>
+    <li>noteon</li>
+    <li>noteoff</li>
+    <li>controlchange</li>
+    <li>pitchbend</li>
+    <li>polyat</li>
+    <li>programchange</li>
+    <li>channelat</li>
+  </ul>
 </script>

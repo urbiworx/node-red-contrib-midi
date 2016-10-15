@@ -1,16 +1,16 @@
 {
-    "name"         : "node-red-contrib-midi",
-    "version"      : "0.0.2",
-    "description"  : "Midi Node",
-	  "dependencies": {
-		"midi": "0.9.4"
-	  },
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/urbiworx/node-red-contrib-midi.git"
-	},
-    "keywords": [ "node-red", "midi" ],
-    "node-red"     : {
+    "name": "node-red-contrib-midi",
+    "version": "1.0.0",
+    "description": "Midi Node",
+    "dependencies": {
+        "midi": "natcl/node-midi"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/urbiworx/node-red-contrib-midi.git"
+    },
+    "keywords": ["node-red", "midi"],
+    "node-red": {
         "nodes": {
             "midi": "midi.js"
         }
