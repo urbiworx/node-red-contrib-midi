@@ -59,7 +59,7 @@ module.exports = function(RED) {
             var msg = {};
             msg.midi = {};
             msg.midi.raw = message.slice();
-            msg.payload = msg.midi.raw.splice(1);
+            msg.payload = message.splice(1);
 
             msg.midi.deltaTime = deltaTime;
             msg.midi.channel = (message & 0xF) + 1;
