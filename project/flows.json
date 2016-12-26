@@ -5,11 +5,6 @@
         "label": "Flow 1"
     },
     {
-        "id": "c926adf4.fa1738",
-        "type": "tab",
-        "label": "Flow 2"
-    },
-    {
         "id": "4913238a.b6ecdc",
         "type": "switch",
         "z": "3fab23bb.c054dc",
@@ -297,7 +292,8 @@
         "wires": [
             [
                 "4913238a.b6ecdc",
-                "e15ec479.7b6cb"
+                "e15ec479.7b6cb",
+                "a569ca98.4c28a8"
             ]
         ]
     },
@@ -306,7 +302,7 @@
         "type": "midi in",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "3",
+        "midiport": "0",
         "x": 140,
         "y": 560,
         "wires": [
@@ -332,7 +328,7 @@
         "type": "midi in",
         "z": "3fab23bb.c054dc",
         "name": "",
-        "midiport": "3",
+        "midiport": "0",
         "x": 140,
         "y": 600,
         "wires": [
@@ -361,92 +357,20 @@
         "active": true,
         "console": "false",
         "complete": "false",
-        "x": 160,
+        "x": 170,
         "y": 220,
         "wires": []
     },
     {
-        "id": "c92e3c1.b77e3c",
-        "type": "midi in",
-        "z": "c926adf4.fa1738",
-        "name": "",
-        "midiport": "0",
-        "x": 160,
-        "y": 100,
-        "wires": [
-            [
-                "42bb3772.6d0f08"
-            ]
-        ]
-    },
-    {
-        "id": "c51c0fc6.bce468",
-        "type": "midi in",
-        "z": "c926adf4.fa1738",
-        "name": "",
-        "midiport": "3",
-        "x": 160,
-        "y": 160,
-        "wires": [
-            [
-                "42bb3772.6d0f08"
-            ]
-        ]
-    },
-    {
-        "id": "d9209eb2.c7f4e8",
-        "type": "midi out",
-        "z": "c926adf4.fa1738",
-        "name": "",
-        "midiport": "3",
-        "x": 360,
-        "y": 260,
-        "wires": []
-    },
-    {
-        "id": "6ad0a3dc.04093c",
-        "type": "midi out",
-        "z": "c926adf4.fa1738",
-        "name": "",
-        "midiport": "2",
-        "x": 360,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "42bb3772.6d0f08",
+        "id": "a569ca98.4c28a8",
         "type": "debug",
-        "z": "c926adf4.fa1738",
+        "z": "3fab23bb.c054dc",
         "name": "",
         "active": true,
         "console": "false",
-        "complete": "false",
-        "x": 340,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "f9405b2f.2f5c5",
-        "type": "midi in",
-        "z": "c926adf4.fa1738",
-        "name": "",
-        "midiport": "1",
-        "x": 120,
+        "complete": "midi.raw",
+        "x": 180,
         "y": 260,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "c96db8ad.a7e688",
-        "type": "midi in",
-        "z": "c926adf4.fa1738",
-        "name": "",
-        "midiport": "2",
-        "x": 130,
-        "y": 320,
-        "wires": [
-            []
-        ]
+        "wires": []
     }
 ]
