@@ -27,6 +27,9 @@ module.exports = function(RED) {
 
     var inputPortID = {};
     var outputPortID = {};
+    var ignoreSysex = {};
+    var ignoreTiming = {};
+    var ignoreSensing = {};
 
     var midiTypes = {
         '8': 'noteoff',
@@ -53,6 +56,9 @@ module.exports = function(RED) {
 
         inputPortID[node.id] = parseInt(config.midiport);
         node.portName = node.input.getPortName(parseInt(inputPortID[node.id]));
+        ignoreSysex[node.id] = config.midisysex === 1 ? false : true;
+        ignoreTiming[node.id] = config.miditiming === 1 ? false : true;
+        ignoreSensing[node.id] = config.midisensing === 1 ? false : true;
 
         node.parseMidi = function(deltaTime, message) {
 
@@ -86,6 +92,7 @@ module.exports = function(RED) {
         }
 
         node.input.openPort(inputPortID[node.id]);
+        node.input.ignoreTypes(ignoreSysex[node.id], ignoreTiming[node.id], ignoreSensing[node.id]);
 
         node.on("close", function() {
             node.input.closePort();

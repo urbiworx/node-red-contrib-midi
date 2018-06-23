@@ -18,7 +18,10 @@
       category: 'input',
       defaults: {
         name: {value:""},
-		    midiport: {value:"0"}
+        midiport: {value:"0"},
+        midisysex: {value:"0"},
+        miditiming: {value:"0"},
+        midisensing: {value:"0"}
       },
       color:"BurlyWood",
       icon: "midi_port.png",
@@ -65,6 +68,24 @@
          <select id="node-input-midiport">
          </select>
     </div>
+    <div class="form-row">
+        <label><i class="fa fa-filter"></i> Options</label>
+        <label for="node-input-midisysex" style="width:70%">
+        <input type="checkbox" id="node-input-midisysex" style="display:inline-block; width:22px; vertical-align:baseline;"><span>Sysex messages</span>
+        </label>
+    </div>
+    <div class="form-row">
+        <label> </label>
+        <label for="node-input-miditiming" style="width:70%">
+        <input type="checkbox" id="node-input-miditiming" style="display:inline-block; width:22px; vertical-align:baseline;"><span>Timing messages</span>
+        </label>
+    </div>
+    <div class="form-row">
+        <label></label>
+        <label for="node-input-midisensing" style="width:70%">
+        <input type="checkbox" id="node-input-midisensing" style="display:inline-block; width:22px; vertical-align:baseline;"><span>Sensing messages</span>
+        </label>
+    </div>
 </script>
 
 <!-- Output node -->
@@ -73,7 +94,7 @@
       category: 'output',
       defaults: {
         name: {value:""},
-		    midiport: {value:"0"}
+        midiport: {value:"0"}
       },
       color:"BurlyWood",
       icon: "midi_port.png",
