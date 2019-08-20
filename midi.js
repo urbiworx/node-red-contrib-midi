@@ -84,18 +84,18 @@ module.exports = function(RED) {
         if(!connected){
             
             midi.closePort();
+            
             findPortByName(midi,node.portName,function(i){ 
-                midi.openPort(i);                
+                midi.openPort(i); 
                 node.portId = i; 
-                connected = true;
-                lastConnection = false;
+                connected = true;  
+                lastConnection = false;              
                 node.portName = midi.getPortName(i);
-                //console.log(`connecting to ${node.portId} ${node.portName}`);
+                console.log(`reconnecting to ${node.portId} ${node.portName}`);
                 
             });
             
         }
-        
         
         if(connected!=lastConnection){
             if(connected){
@@ -159,21 +159,27 @@ module.exports = function(RED) {
         
 
         //node.input.openPort(inputPortID[node.id]);
-        checkConnection(true,node,node.input);
+        node.connectionCheckTimeout = setTimeout( ()=>checkConnection(true,node,node.input), 2000);
         
 
-        node.on("close", function() {
-            console.log("closing midi input node");
-            node.input.closePort();
+        node.on("close", function(removed, done) {
+            console.log("closing midi input");
             if(node.connectionCheckTimeout){
                 clearTimeout(connectionCheckTimeout);
             }
+            if(node.input.isPortOpen())
+                node.input.closePort();
+            node.input.cleanUp();
+            node.input = null;
+            
             if (virtualPortsOpen) {
                 virtualPortsOpen = false;
                 virtualInput.closePort();
                 virtualOutput.closePort();
             }
             //delete inputPortID[node.id];
+            
+            setTimeout( done, 5000 );
         });
 
         RED.httpAdmin.get('/midi/input/ports/' + node.id + '/current', function(req, res, next) {
@@ -202,7 +208,7 @@ module.exports = function(RED) {
         node.portName = config.midiname;
         //
         //node.output.openPort(outputPortID[node.id]);
-        checkConnection(true,node,node.output);
+        node.connectionCheckTimeout = setTimeout( ()=>checkConnection(true,node,node.output), 2000);
 
         node.on("input", function(msg) {
             if (msg.midi) {
@@ -229,14 +235,21 @@ module.exports = function(RED) {
             }
         });
 
-        node.on("close", function() {
-            node.output.closePort();
+        node.on("close", function(removed,done) {
+            
+            if(node.output.isPortOpen())
+                node.output.closePort();
+            node.output.cleanUp();
+            if(node.connectionCheckTimeout){
+                clearTimeout(connectionCheckTimeout);
+            }
             if (virtualPortsOpen) {
                 virtualPortsOpen = false;
                 virtualInput.closePort();
                 virtualOutput.closePort();
             }
             //delete outputPortID[node.id];
+            setTimeout( done, 5000 );
         });
 
         RED.httpAdmin.get('/midi/output/ports/' + node.id + '/current', function(req, res, next) {
