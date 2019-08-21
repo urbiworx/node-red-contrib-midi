@@ -68,8 +68,6 @@ module.exports = function(RED) {
             let iterName = midiIO.getPortName(i).replace(/ [0-9]+$/,'');
             //console.log(`${shortName} ${iterName}`,iterName === shortName);
             if( iterName === shortName ){
-                midiIO.openPort(i);
-                
                 if(successCallback) successCallback(i);
                 return true;
             }
@@ -102,19 +100,13 @@ module.exports = function(RED) {
                 midiIO.openPort(i);                
                 node.portId = i; 
                 node.portName = midiIO.getPortName(i);    
-                /*if(midiIO.isPortOpen()){
-                    connected = true;
-                    lastConnection = false;
-                }*/
-                //console.log(`connecting to ${node.portId} ${node.portName}`);
-                
             });
             
         }
         
         
         if(connected!=lastConnection){
-            if(connected){
+            if(connected){                
                 node.status({fill:"green",shape:"dot",text:"connected"});
             }
             else {
@@ -193,7 +185,7 @@ module.exports = function(RED) {
                 virtualOutput.closePort();
             }
             //delete inputPortID[node.id];
-            inputPortID[node.id].removeAllListeners("on");
+            inputPortID[node.id].removeAllListeners("message");
             inputPortID[node.id].closePort();            
             //inputPortID[node.id] = null;
             //delete inputPortID[node.id];
@@ -258,7 +250,6 @@ module.exports = function(RED) {
         node.on("close", function() {
             
             outputPortID[node.id].closePort();
-            outputPortID[node.id].removeAllListeners("on");
             
             if (virtualPortsOpen) {
                 virtualPortsOpen = false;
