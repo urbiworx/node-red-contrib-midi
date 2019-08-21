@@ -101,9 +101,11 @@ module.exports = function(RED) {
                 //console.log("connecting to midi port "+i);
                 midiIO.openPort(i);                
                 node.portId = i; 
-                connected = true;
-                lastConnection = false;
-                node.portName = midiIO.getPortName(i);
+                node.portName = midiIO.getPortName(i);    
+                /*if(midiIO.isPortOpen()){
+                    connected = true;
+                    lastConnection = false;
+                }*/
                 //console.log(`connecting to ${node.portId} ${node.portName}`);
                 
             });
