@@ -17,18 +17,27 @@
 module.exports = function(RED) {
     "use strict";
 
-    var midi = require('midi');
+    const isWindows = (process.platform === "win32");
 
-    var virtualInput = new midi.input();
-    var virtualOutput = new midi.output();
-    virtualInput.openVirtualPort("to Node-RED");
-    virtualOutput.openVirtualPort("from Node-RED");
-    var virtualPortsOpen = true;
+    const midi = require('midi');
+        
+    var virtualInput;
+    var virtualOutput;
+    var virtualPortsOpen = false;
+    if(!isWindows){
+        virtualInput = new midi.input();
+        virtualOutput = new midi.output();
+        virtualInput.openVirtualPort("to Node-RED");
+        virtualOutput.openVirtualPort("from Node-RED");
+        virtualPortsOpen = true;
+    }
 
     var inputPortID = {};
     var outputPortID = {};
 
-    var midiTypes = {
+    const checkInterval = 2000;
+
+    const midiTypes = {
         '8': 'noteoff',
         '9': 'noteon',
         '10': 'polyat',
@@ -37,13 +46,69 @@ module.exports = function(RED) {
         '13': 'channelat',
         '14': 'pitchbend'
     };
+    Object.freeze(midiTypes);
+
+    var findPortByName = function(midiIO,name,successCallback){
+        let portCount = midiIO.getPortCount();
+        // attempt with the suffix id
+        for(let i=0;i<portCount;i++){
+            let iterName = midiIO.getPortName(i);
+            if( iterName === name ){
+                if(successCallback) successCallback(i);
+                return true;
+            }
+        }
+
+        //try to find without suffix 
+        let shortName = name.replace(/ [0-9]+$/,'');
+        
+        for(let i=0;i<portCount;i++){
+            let iterName = midiIO.getPortName(i).replace(/ [0-9]+$/,'');
+            if( iterName === shortName ){
+                if(successCallback) successCallback(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    var checkConnection = function(lastConnection,node,midiIO){
+        let portCount = midiIO.getPortCount();
+        
+        let connected = midiIO.isPortOpen() &&  Number.isInteger(node.portId) && portCount > node.portId  && node.portName==midiIO.getPortName(node.portId);
+        
+        //if no longer availble attempt reconnection
+        if(!connected){
+            
+            midiIO.closePort();
+            findPortByName(midiIO,node.portName,function(i){ 
+                midiIO.openPort(i);                
+                node.portId = i; 
+                node.portName = midiIO.getPortName(i);    
+            });
+            
+        }
+        
+        
+        if(connected!=lastConnection){
+            if(connected){                
+                node.status({fill:"green",shape:"dot",text:"connected"});
+            }
+            else {
+                node.status({fill:"red",shape:"dot",text:"disconnected"});
+            }    
+        }
+        node.connectionCheckTimeout = setTimeout(checkConnection, checkInterval, connected, node, midiIO);
+    };
 
     function MidiInputNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        node.input = new midi.input();
+        
+        if(!inputPortID[node.id])
+            inputPortID[node.id] = new midi.Input();
 
-        if (!virtualPortsOpen) {
+        if (!virtualPortsOpen && !isWindows ) {
             virtualPortsOpen = true;
             virtualInput = new midi.input();
             virtualOutput = new midi.output();
@@ -51,9 +116,8 @@ module.exports = function(RED) {
             virtualOutput.openVirtualPort("from Node-RED");
         }
 
-        inputPortID[node.id] = parseInt(config.midiport);
-        node.portName = node.input.getPortName(parseInt(inputPortID[node.id]));
-
+        node.portName = config.midiname;
+        
         node.parseMidi = function(deltaTime, message) {
 
             var msg = {};
@@ -66,14 +130,14 @@ module.exports = function(RED) {
             msg.midi.type = midiTypes[message >> 4];
             msg.midi.data = msg.payload;
 
-            msg.topic = node.input.getPortName(parseInt(config.midiport));
+            msg.topic = inputPortID[node.id].getPortName(parseInt(node.portId));
             return msg;
         };
 
         node.processInput = function(deltaTime, message) {
             node.send(node.parseMidi(deltaTime, message));
         };
-
+        
         node.processVirtualInput = function(deltaTime, message) {
             if (node.portName === 'from Node-RED') {
                 node.send(node.parseMidi(deltaTime, message));
@@ -82,23 +146,31 @@ module.exports = function(RED) {
         if (node.portName === "from Node-RED") {
             virtualInput.on('message', node.processVirtualInput);
         } else {
-            node.input.on('message', node.processInput);
+            inputPortID[node.id].on('message', node.processInput);
         }
 
-        node.input.openPort(inputPortID[node.id]);
+        var connectionCheckTimeout;
+
+        checkConnection(true,node,inputPortID[node.id]);
+        
 
         node.on("close", function() {
-            node.input.closePort();
+                       
+            if(node.connectionCheckTimeout){
+                clearTimeout(connectionCheckTimeout);
+            }
             if (virtualPortsOpen) {
                 virtualPortsOpen = false;
                 virtualInput.closePort();
                 virtualOutput.closePort();
             }
-            delete inputPortID[node.id];
+            inputPortID[node.id].removeAllListeners("message");
+            inputPortID[node.id].closePort();            
+            
         });
 
         RED.httpAdmin.get('/midi/input/ports/' + node.id + '/current', function(req, res, next) {
-            res.end(JSON.stringify(inputPortID[node.id]));
+            res.end(JSON.stringify(node.portName)); //inputPortID[node.id]
             return;
         });
     }
@@ -108,9 +180,10 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var node = this;
 
-        node.output = new midi.output();
+        if(!outputPortID[node.id])
+            outputPortID[node.id] = new midi.output();
 
-        if (!virtualPortsOpen) {
+        if (!virtualPortsOpen && !isWindows) {
             virtualPortsOpen = true;
             virtualInput = new midi.input();
             virtualOutput = new midi.output();
@@ -118,10 +191,8 @@ module.exports = function(RED) {
             virtualOutput.openVirtualPort("from Node-RED");
         }
 
-        outputPortID[node.id] = parseInt(config.midiport);
-        node.portName = node.output.getPortName(outputPortID[node.id]);
-
-        node.output.openPort(outputPortID[node.id]);
+        node.portName = config.midiname;
+        checkConnection(true,node,outputPortID[node.id]);
 
         node.on("input", function(msg) {
             if (msg.midi) {
@@ -142,24 +213,26 @@ module.exports = function(RED) {
 
             if (node.portName === 'to Node-RED') {
                 virtualOutput.sendMessage(msg.payload);
-                node.output.sendMessage(msg.payload);
+                outputPortID[node.id].sendMessage(msg.payload);
             } else {
-                node.output.sendMessage(msg.payload);
+                outputPortID[node.id].sendMessage(msg.payload);
             }
         });
 
         node.on("close", function() {
-            node.output.closePort();
+            
+            outputPortID[node.id].closePort();
+            
             if (virtualPortsOpen) {
                 virtualPortsOpen = false;
                 virtualInput.closePort();
                 virtualOutput.closePort();
             }
-            delete outputPortID[node.id];
+            
         });
 
         RED.httpAdmin.get('/midi/output/ports/' + node.id + '/current', function(req, res, next) {
-            res.end(JSON.stringify(outputPortID[node.id]));
+            res.end(JSON.stringify(node.portName));
             return;
         });
     }

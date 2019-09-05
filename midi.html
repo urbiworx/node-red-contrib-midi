@@ -18,7 +18,8 @@
       category: 'input',
       defaults: {
         name: {value:""},
-		    midiport: {value:"0"}
+        midiport: {value:"0"},
+        midiname: {value:""}
       },
       color:"BurlyWood",
       icon: "midi_port.png",
@@ -38,12 +39,12 @@
           success: function(data) {
             var ports = JSON.parse(data);
             $.each(ports, function (i, item) {
-              $('#node-input-midiport').append($('<option>', {value: i, text: item}));
+              $('#node-input-midiname').append($('<option>', {value: item, text: item}));
             });
             $.ajax({
               url: "midi/input/ports/" + id + "/current",
               success: function(data) {
-                $('#node-input-midiport').val(JSON.parse(data));
+                $('#node-input-midiname').val(JSON.parse(data));
               }
             })
           }
@@ -61,8 +62,8 @@
          <input type="text" id="node-input-name" placeholder="name">
     </div>
      <div class="form-row">
-         <label for="node-input-midiport"><i class="fa fa-random"></i> Port</label>
-         <select id="node-input-midiport">
+         <label for="node-input-midiname"><i class="fa fa-random"></i> Portz</label>
+         <select id="node-input-midiname">
          </select>
     </div>
 </script>
@@ -73,7 +74,8 @@
       category: 'output',
       defaults: {
         name: {value:""},
-		    midiport: {value:"0"}
+        midiport: {value:"0"},
+        midiname: {value:""}
       },
       color:"BurlyWood",
       icon: "midi_port.png",
@@ -93,12 +95,12 @@
           success: function(data) {
             var ports = JSON.parse(data);
             $.each(ports, function (i, item) {
-              $('#node-input-midiport').append($('<option>', {value: i, text: item}));
+              $('#node-input-midiname').append($('<option>', {value: item, text: item}));
             });
             $.ajax({
               url: "midi/output/ports/" + id + "/current",
               success: function(data) {
-                $('#node-input-midiport').val(JSON.parse(data));
+                $('#node-input-midiname').val(JSON.parse(data));
               }
             })
           }
@@ -116,8 +118,8 @@
          <input type="text" id="node-input-name" placeholder="name">
     </div>
      <div class="form-row">
-         <label for="node-input-midiport"><i class="fa fa-random"></i> Port</label>
-         <select id="node-input-midiport">
+         <label for="node-input-midiname"><i class="fa fa-random"></i> Port</label>
+         <select id="node-input-midiname">
          </select>
     </div>
 </script>
