@@ -49,12 +49,10 @@ module.exports = function(RED) {
     Object.freeze(midiTypes);
 
     var findPortByName = function(midiIO,name,successCallback){
-        //console.log(`findPortByName ${midiIO}, ${name}`);
         let portCount = midiIO.getPortCount();
         // attempt with the suffix id
         for(let i=0;i<portCount;i++){
             let iterName = midiIO.getPortName(i);
-            //console.log(`${name} ${iterName}`,iterName === name);
             if( iterName === name ){
                 if(successCallback) successCallback(i);
                 return true;
@@ -66,7 +64,6 @@ module.exports = function(RED) {
         
         for(let i=0;i<portCount;i++){
             let iterName = midiIO.getPortName(i).replace(/ [0-9]+$/,'');
-            //console.log(`${shortName} ${iterName}`,iterName === shortName);
             if( iterName === shortName ){
                 if(successCallback) successCallback(i);
                 return true;
@@ -76,27 +73,15 @@ module.exports = function(RED) {
     }
 
     var checkConnection = function(lastConnection,node,midiIO){
-        //console.log(`checkConnection ${midiIO}, ${node.name}`);
         let portCount = midiIO.getPortCount();
         
-        /*console.log(
-            midiIO.isPortOpen(),
-            portCount,
-            node.portId,
-            node.portName,
-            Number.isInteger(node.portId) && node.portId<portCount && midiIO.getPortName(node.portId)
-        );*/
-
         let connected = midiIO.isPortOpen() &&  Number.isInteger(node.portId) && portCount > node.portId  && node.portName==midiIO.getPortName(node.portId);
         
-        //console.log("checking midi input connection : "+(connected?"connected":"disconnected"));
-
         //if no longer availble attempt reconnection
         if(!connected){
             
             midiIO.closePort();
             findPortByName(midiIO,node.portName,function(i){ 
-                //console.log("connecting to midi port "+i);
                 midiIO.openPort(i);                
                 node.portId = i; 
                 node.portName = midiIO.getPortName(i);    
@@ -119,7 +104,7 @@ module.exports = function(RED) {
     function MidiInputNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        //console.log(`creating input node ${node.id} ${config}`);
+        
         if(!inputPortID[node.id])
             inputPortID[node.id] = new midi.Input();
 
@@ -165,17 +150,12 @@ module.exports = function(RED) {
         }
 
         var connectionCheckTimeout;
-        //let portId = inputPortID[node.id];
-        
 
-        //inputPortID[node.id].openPort(inputPortID[node.id]);
         checkConnection(true,node,inputPortID[node.id]);
         
 
         node.on("close", function() {
-            //console.log("closing midi input node");
-            
-           
+                       
             if(node.connectionCheckTimeout){
                 clearTimeout(connectionCheckTimeout);
             }
@@ -184,12 +164,8 @@ module.exports = function(RED) {
                 virtualInput.closePort();
                 virtualOutput.closePort();
             }
-            //delete inputPortID[node.id];
             inputPortID[node.id].removeAllListeners("message");
             inputPortID[node.id].closePort();            
-            //inputPortID[node.id] = null;
-            //delete inputPortID[node.id];
-            
             
         });
 
@@ -215,11 +191,7 @@ module.exports = function(RED) {
             virtualOutput.openVirtualPort("from Node-RED");
         }
 
-        //outputPortID[node.id] = parseInt(config.midiport);
-        //node.portName = outputPortID[node.id].getPortName(outputPortID[node.id]);
         node.portName = config.midiname;
-        //
-        //outputPortID[node.id].openPort(outputPortID[node.id]);
         checkConnection(true,node,outputPortID[node.id]);
 
         node.on("input", function(msg) {
@@ -256,7 +228,6 @@ module.exports = function(RED) {
                 virtualInput.closePort();
                 virtualOutput.closePort();
             }
-            //console.log("closing midi ouput node");
             
         });
 
