@@ -3,7 +3,7 @@
     "version": "1.0.1",
     "description": "Midi Node",
     "dependencies": {
-        "midi": "~1.0.0"
+        "midi": "~1.0.4"
     },
     "repository": {
         "type": "git",
