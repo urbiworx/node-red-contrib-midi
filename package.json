@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-midi",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "Midi Node",
     "dependencies": {
         "midi": "2.0.0"
@@ -9,7 +9,10 @@
         "type": "git",
         "url": "https://github.com/urbiworx/node-red-contrib-midi.git"
     },
-    "keywords": ["node-red", "midi"],
+    "keywords": [
+        "node-red",
+        "midi"
+    ],
     "node-red": {
         "nodes": {
             "midi": "midi.js"
