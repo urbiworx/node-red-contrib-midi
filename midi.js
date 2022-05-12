@@ -85,7 +85,12 @@ module.exports = function(RED) {
             node.input.on('message', node.processInput);
         }
 
-        node.input.openPort(inputPortID[node.id]);
+        try {
+            node.input.openPort(inputPortID[node.id]);
+        } catch (error) {
+            node.error(`node-red-contrib-midi: ${error}`);
+        }
+        
 
         node.on("close", function() {
             node.input.closePort();
@@ -121,8 +126,12 @@ module.exports = function(RED) {
         outputPortID[node.id] = parseInt(config.midiport);
         node.portName = node.output.getPortName(outputPortID[node.id]);
 
-        node.output.openPort(outputPortID[node.id]);
-
+        try {
+            node.output.openPort(outputPortID[node.id]);
+        } catch (error) {
+            node.error(`node-red-contrib-midi: ${error}`);
+        }
+        
         node.on("input", function(msg) {
             if (msg.midi) {
                 var message = [];
