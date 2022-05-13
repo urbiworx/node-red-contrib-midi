@@ -1,2 +1,5 @@
-# Midi Node for Node RED
-Creates events within Node Red when Midi Input is available. Documentation see inside the node.
+# node-red-contrib-midi
+
+This node can send and receive MIDI events in Node-RED.
+
+![](./screenshot.png)
