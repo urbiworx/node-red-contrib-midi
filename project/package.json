@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "node-red-contrib-midi project example",
   "dependencies": {
-    "node-red": "2.2.2",
+    "node-red": "3.0.2",
     "node-red-contrib-midi": "../"
   },
   "repository": {
